@@ -166,11 +166,4 @@ class FunctionalDefaultBehaviorTest extends GMockTestCase {
         }
     }
 
-    void testDefaultBehaviorsInRecordStage() {
-        def m = mock()
-        assertEquals 'Mock for Object', JavaTestHelper.toStringOn(m)
-        assertEquals System.identityHashCode(m), JavaTestHelper.hashCodeOf(m)
-        assertTrue JavaTestHelper.equalsToEachOther(m, m)
-    }
-
 }

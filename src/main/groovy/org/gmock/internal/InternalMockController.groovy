@@ -16,6 +16,7 @@
 package org.gmock.internal
 
 import junit.framework.Assert
+import org.gmock.internal.MockController
 import org.gmock.internal.MockDelegate
 import org.gmock.internal.MockFactory
 import org.gmock.internal.callstate.CallState
@@ -24,7 +25,7 @@ import org.gmock.internal.expectation.OrderedExpectations
 import org.gmock.internal.expectation.UnorderedExpectations
 import org.gmock.internal.recorder.ConstructorRecorder
 
-class InternalMockController {
+class InternalMockController implements MockController {
 
     def mockFactory
 
@@ -59,8 +60,24 @@ class InternalMockController {
         order == Order.LOOSE
     }
 
+    @Deprecated
+    def mock(Map constraints, Class clazz = Object, Closure expectationClosure = null) {
+        def mockArgs = [:]
+        mockArgs.clazz = clazz
+        mockArgs.constructorRecorder = new ConstructorRecorder(constraints.constructor)
+        if (expectationClosure){
+            mockArgs.expectationClosure = expectationClosure
+        }
+
+        return doMock(mockArgs)
+    }
+
     def mock(Class clazz = Object, Object ... args) {
         def mockArgs = mockFactory.parseMockArgument(clazz, args)
+        return doMock(mockArgs)
+    }
+
+    private doMock(mockArgs) {
         def mock
         doInternal {
             if (replay) {
@@ -195,27 +212,27 @@ class InternalMockController {
         return callState
     }
 
-    Object doInternal(invokeOriginal, work) {
+    def doInternal(Closure invokeOriginal, Closure work) {
         if (!internal) {
             return doInternal(work)
         } else {
-            return invokeOriginal.call()
+            return invokeOriginal()
         }
     }
 
-    Object doInternal(work) {
+    def doInternal(Closure work) {
         doWork(work, true)
     }
 
-    Object doExternal(work) {
+    def doExternal(Closure work) {
         doWork(work, false)
     }
 
-    private doWork(work, boolean mode) {
+    private doWork(Closure work, boolean mode) {
         def backup = internal
         internal = mode
         try {
-            return work.call()
+            return work()
         } finally {
             internal = backup
         }

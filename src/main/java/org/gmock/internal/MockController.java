@@ -15,12 +15,10 @@
  */
 package org.gmock.internal;
 
-/**
- * For simulating closures in Java. We don't use java.util.concurrent.Callable because we don't want to handle checked
- * exceptions.
- */
-public interface Callable {
+public interface MockController {
 
-    Object call();
+    boolean getReplay();
+
+    boolean getInternal();
 
 }

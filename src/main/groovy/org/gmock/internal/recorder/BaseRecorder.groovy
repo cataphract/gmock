@@ -33,8 +33,8 @@ class BaseRecorder {
         times(new RangeTimes(range))
     }
 
-    def times(int time) {
-        times(new StrictTimes(time))
+    def times(int times) {
+        times(new StrictTimes(times))
     }
 
     def never() {
@@ -49,16 +49,16 @@ class BaseRecorder {
         atLeast(1)
     }
 
-    def atLeast(int time) {
-        times(new AtLeastTimes(time))
+    def atLeast(int times) {
+        times(new AtLeastTimes(times))
     }
 
     def atMostOnce() {
         atMost(1)
     }
 
-    def atMost(int time) {
-        times(new AtMostTimes(time))
+    def atMost(int times) {
+        times(new AtMostTimes(times))
     }
 
     protected times(times) {

@@ -15,18 +15,19 @@
  */
 package org.gmock.internal
 
-import java.lang.reflect.Modifier
-import net.sf.cglib.proxy.Callback
-import net.sf.cglib.proxy.Enhancer
-import net.sf.cglib.proxy.MethodInterceptor
-import org.gmock.GMockController
-import org.gmock.internal.metaclass.ConcreteMockProxyMetaClass
-import org.gmock.internal.metaclass.MockProxyMetaClass
 import org.gmock.internal.recorder.ConstructorRecorder
 import org.gmock.internal.recorder.InvokeConstructorRecorder
 import org.gmock.internal.recorder.MockNameRecorder
-import org.gmock.internal.util.WeakIdentityHashMap
+import org.gmock.GMockController
+import org.gmock.internal.metaclass.MockProxyMetaClass
+import net.sf.cglib.proxy.Enhancer
+import net.sf.cglib.proxy.Callback
+import net.sf.cglib.proxy.MethodInterceptor
+import static org.gmock.internal.metaclass.MetaClassHelper.setMetaClassTo
+import org.gmock.internal.metaclass.ConcreteMockProxyMetaClass
+import java.lang.reflect.Modifier
 import org.objenesis.ObjenesisHelper
+import org.gmock.internal.util.WeakIdentityHashMap
 
 class MockFactory {
 
@@ -176,7 +177,7 @@ class MockFactory {
 
     private mockFinalClass(Class clazz, ProxyMetaClass mpmc, InvokeConstructorRecorder invokeConstructorRecorder) {
         def mockInstance = newInstance(clazz, invokeConstructorRecorder)
-        mockInstance.metaClass = mpmc
+        setMetaClassTo(mockInstance, clazz, mpmc, controller)
         return mockInstance
     }
 
